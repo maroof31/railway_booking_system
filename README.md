@@ -40,6 +40,14 @@ The system uses PostgreSQL with the following settings:
     }
 ```
 
+
+
+## Authentication
+
+- **Token Authentication:**
+Authentication is necessary for accessing most endpoints, utilizing a token-based system. Users must log in to acquire a token, which needs to be included in the Authorization header for subsequent requests.
+- **CSRF Token:** Certain endpoints require CSRF tokens to prevent CSRF attacks. Make sure to include the CSRF token in the request headers.
+
 ## Endpoints
 
 ### User Registration
@@ -82,6 +90,16 @@ The system uses PostgreSQL with the following settings:
 - `total_seats` (integer): Total number of seats on the train.
 - **Authorization:** Superuser authentication required.
 
+- ### Get Seat Availability
+
+- **Description:** Retrieve seat availability information for trains traveling between a specified source and destination.
+- **URL:** `/user/get_seat_availability/`
+- **Method:** `GET`
+- **Parameters:**
+- `source` (string): Source station.
+- `destination` (string): Destination station.
+- **Authorization:** Token-based authentication required.
+
 ### Book Seat
 
 - **Description:** Books seats on a particualr train.
@@ -94,16 +112,6 @@ The system uses PostgreSQL with the following settings:
 - `seat_count` (integer): Number of seats to book.
 - **Authorization:** Token-based authentication required.
 
-### Get Seat Availability
-
-- **Description:** Retrieve seat availability information for trains traveling between a specified source and destination.
-- **URL:** `/user/get_seat_availability/`
-- **Method:** `GET`
-- **Parameters:**
-- `source` (string): Source station.
-- `destination` (string): Destination station.
-- **Authorization:** Token-based authentication required.
-
 ### Get Booking Details
 
 - **URL:** `/user/get_booking_details/<int:id>/`
@@ -112,12 +120,6 @@ The system uses PostgreSQL with the following settings:
 - **Parameters:**
 - `id` (integer): User's ID.
 - **Authorization:** Token-based authentication required.
-
-## Authentication
-
-- **Token Authentication:**
-Authentication is necessary for accessing most endpoints, utilizing a token-based system. Users must log in to acquire a token, which needs to be included in the Authorization header for subsequent requests.
-- **CSRF Token:** Certain endpoints require CSRF tokens to prevent CSRF attacks. Make sure to include the CSRF token in the request headers.
 
 
 
