@@ -1,11 +1,11 @@
 # Train Booking System API
 
-This is a RESTful API for a train booking system. It provides endpoints for user registration, login, booking seats on trains, fetching seat availability, and getting booking details. The API is built using Django and Django Rest Framework.
+This RESTful API is designed for a train booking system, offering endpoints for user registration, login, seat booking, checking seat availability, and retrieving booking details. It is developed using Django and the Django Rest Framework.
 
 ## Installation
 
 1. Clone the repository:
-```python
+```
 https://github.com/adarshkumar5776/railway_booking_system
 ```
 
@@ -27,9 +27,8 @@ python manage.py runserver
 
 5. Access the API at `http://localhost:8000/`.
 
-## Database
-
-PostgreSQL is used with the following configuration:
+## Database Configuration
+The system uses PostgreSQL with the following settings:
 
 ```python
 'default': {
@@ -45,9 +44,10 @@ PostgreSQL is used with the following configuration:
 
 ### User Registration
 
+- **Description:** Create a new user account using a username and email that have not been used before.
+
 - **URL:** `/user/register/`
 - **Method:** `POST`
-- **Description:** Register a new user with a unique username and email.
 - **Parameters:**
 - `username` (string): User's username.
 - `password` (string): User's password.
@@ -55,26 +55,26 @@ PostgreSQL is used with the following configuration:
 
 ### User Login
 
+- **Description:** Authenticate and obtain an authentication token for a logged-in user.
 - **URL:** `/user/login/`
 - **Method:** `POST`
-- **Description:** Login an existing user and receive an authentication token.
 - **Parameters:**
 - `username` (string): User's username.
 - `password` (string): User's password.
-- **Authorization:** None
+
 
 ### User Logout
 
+- **Description:**Log out the authenticated user and invalidate/delete the authentication token.
 - **URL:** `/user/logout/`
 - **Method:** `POST`
-- **Description:** Logout the authenticated user and delete the authentication token.
 - **Authorization:** Token-based authentication required.
 
 ### Add Train
 
+- **Description:** Create a new train entry with a unique train number, starting point, destination, and total available seats.
 - **URL:** `/add_train/`
 - **Method:** `POST`
-- **Description:** Add a new train with a unique train number, source, destination, and total seats.
 - **Parameters:**
 - `train_number` (integer): Train number (unique).
 - `source` (string): Source station.
@@ -84,9 +84,10 @@ PostgreSQL is used with the following configuration:
 
 ### Book Seat
 
+- **Description:** Books seats on a particualr train.
 - **URL:** `/user/book_seat/`
 - **Method:** `POST`
-- **Description:** Book seats on a particular train.
+
 - **Parameters:**
 - `train_number` (integer): Train number.
 - `user_id` (integer): User's ID.
@@ -95,9 +96,9 @@ PostgreSQL is used with the following configuration:
 
 ### Get Seat Availability
 
+- **Description:** Retrieve seat availability information for trains traveling between a specified source and destination.
 - **URL:** `/user/get_seat_availability/`
 - **Method:** `GET`
-- **Description:** Fetch seat availability for trains between specified source and destination.
 - **Parameters:**
 - `source` (string): Source station.
 - `destination` (string): Destination station.
@@ -107,26 +108,18 @@ PostgreSQL is used with the following configuration:
 
 - **URL:** `/user/get_booking_details/<int:id>/`
 - **Method:** `GET`
-- **Description:** Fetch booking details for a specific user.
+- **Description:** Retrieve booking details for a particular user.
 - **Parameters:**
 - `id` (integer): User's ID.
 - **Authorization:** Token-based authentication required.
 
 ## Authentication
 
-- **Token Authentication:** Authentication is required for most endpoints using a token-based authentication system. Users must login to obtain a token, which should be included in the `Authorization` header of subsequent requests.
-- **CSRF Token:** CSRF tokens are required for certain endpoints to prevent CSRF attacks. Ensure that the CSRF token is included in the request headers.
+- **Token Authentication:**
+Authentication is necessary for accessing most endpoints, utilizing a token-based system. Users must log in to acquire a token, which needs to be included in the Authorization header for subsequent requests.
+- **CSRF Token:** Certain endpoints require CSRF tokens to prevent CSRF attacks. Make sure to include the CSRF token in the request headers.
 
-## Error Handling
 
-- Errors are returned as JSON objects with appropriate status codes and error messages.
-- Common error responses include:
-- `400 Bad Request`: Invalid request parameters.
-- `401 Unauthorized`: Unauthorized access.
-- `403 Forbidden`: Insufficient permissions.
-- `404 Not Found`: Resource not found.
-- `409 Conflict`: Concurrent booking operation failed.
-- Detailed error messages provide guidance on how to resolve issues.
 
 ### Models
 
@@ -154,24 +147,3 @@ The `Booking` model represents a booking made by a user for a specific train in 
 - `update_time`: A DateTime field automatically capturing the date and time when the booking record was last updated.
 
 This model is used to manage information about bookings made by users, including details such as the user who made the booking, the train for which the booking is made, the number of seats booked, and timestamps for creation and updates.
-
-
-### Note on Race Condition Handling
-
-The `book_seat` function employs database transactions and row-level locking to address the race condition issue. Here's how it works:
-
-```python
-# In the book_seat function
-try:
-    with transaction.atomic():
-        # Use select_for_update() to acquire a row-level lock
-        train = trains.objects.select_for_update().get(train_number=train_number)
-
-        # Critical section of code where seats are booked
-        # ...
-
-except IntegrityError:
-    # Handle the case where a concurrent booking operation fails due to row-level lock
-    # Return an appropriate error response indicating the failure
-
-
