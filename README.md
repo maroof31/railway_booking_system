@@ -6,7 +6,7 @@ This RESTful API is designed for a train booking system, offering endpoints for 
 
 1. Clone the repository:
 ```
-https://github.com/adarshkumar5776/railway_booking_system
+https://github.com/maroof31/railway_booking_system
 ```
 
 2. Install the required dependencies:
